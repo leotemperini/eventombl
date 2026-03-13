@@ -4,27 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cadastro e Validação - Evento</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
 
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f3f4f6;
       color: #111827;
     }
-
     .wrap {
-      max-width: 960px;
+      max-width: 980px;
       margin: 24px auto;
       background: #ffffff;
       border-radius: 18px;
       overflow: hidden;
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
     }
-
     .tabs {
       display: flex;
       gap: 10px;
@@ -32,7 +31,6 @@
       padding: 16px;
       flex-wrap: wrap;
     }
-
     .tabs button {
       border: 0;
       border-radius: 10px;
@@ -43,71 +41,51 @@
       cursor: pointer;
       transition: 0.2s;
     }
-
-    .tabs button:hover {
-      opacity: 0.9;
-    }
-
     .tabs button.active {
       background: #2563eb;
     }
-
     .screen {
       display: none;
       padding: 28px;
     }
-
     .screen.active {
       display: block;
     }
-
-    h1, h2 {
+    h1, h2, h3 {
       margin-top: 0;
     }
-
-    p {
-      line-height: 1.5;
-    }
-
     .grid {
       display: grid;
       gap: 16px;
       grid-template-columns: repeat(2, 1fr);
     }
-
     @media (max-width: 768px) {
       .grid {
         grid-template-columns: 1fr;
       }
-
       .wrap {
         margin: 0;
         border-radius: 0;
         min-height: 100vh;
       }
-
       .screen {
         padding: 20px;
       }
-
       .code-box {
         font-size: 24px;
         letter-spacing: 2px;
       }
     }
-
     .field {
       display: flex;
       flex-direction: column;
       gap: 8px;
       margin-bottom: 14px;
     }
-
     label {
       font-size: 14px;
       font-weight: bold;
     }
-
     input {
       padding: 14px;
       font-size: 16px;
@@ -116,15 +94,11 @@
       width: 100%;
       outline: none;
     }
-
     input:focus {
       border-color: #2563eb;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
     }
-
-    button.primary,
-    button.secondary,
-    button.warn {
+    button.primary, button.secondary, button.warn, button.dark {
       border: 0;
       border-radius: 10px;
       padding: 14px 20px;
@@ -136,25 +110,10 @@
       margin-top: 8px;
       transition: 0.2s;
     }
-
-    button.primary {
-      background: #16a34a;
-    }
-
-    button.secondary {
-      background: #2563eb;
-    }
-
-    button.warn {
-      background: #d97706;
-    }
-
-    button.primary:hover,
-    button.secondary:hover,
-    button.warn:hover {
-      opacity: 0.92;
-    }
-
+    button.primary { background: #16a34a; }
+    button.secondary { background: #2563eb; }
+    button.warn { background: #d97706; }
+    button.dark { background: #111827; }
     .card {
       margin-top: 18px;
       padding: 18px;
@@ -162,7 +121,6 @@
       border: 1px solid #e5e7eb;
       border-radius: 14px;
     }
-
     .code-box {
       margin-top: 12px;
       padding: 18px;
@@ -175,41 +133,42 @@
       letter-spacing: 4px;
       word-break: break-word;
     }
-
     .status {
       padding: 14px;
       border-radius: 12px;
       font-weight: bold;
       margin-bottom: 12px;
     }
-
-    .ok {
-      background: #dcfce7;
-      color: #166534;
+    .ok { background: #dcfce7; color: #166534; }
+    .error { background: #fee2e2; color: #991b1b; }
+    .warnbox { background: #fef3c7; color: #92400e; }
+    .small { color: #6b7280; font-size: 13px; }
+    .line { margin: 8px 0; }
+    .loading { opacity: 0.7; pointer-events: none; }
+    .qr-wrap {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 12px;
     }
-
-    .error {
-      background: #fee2e2;
-      color: #991b1b;
+    #qrCanvas {
+      background: #fff;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
     }
-
-    .warnbox {
-      background: #fef3c7;
-      color: #92400e;
+    #reader {
+      width: 100%;
+      max-width: 420px;
+      margin-top: 12px;
     }
-
-    .small {
-      color: #6b7280;
-      font-size: 13px;
-    }
-
-    .line {
-      margin: 8px 0;
-    }
-
-    .loading {
-      opacity: 0.7;
-      pointer-events: none;
+    .hidden { display: none !important; }
+    .senha-box { max-width: 420px; }
+    .divider {
+      margin: 18px 0;
+      border-top: 1px solid #e5e7eb;
     }
   </style>
 </head>
@@ -217,12 +176,12 @@
   <div class="wrap">
     <div class="tabs">
       <button id="btnCadastro" class="active" onclick="mostrarTela('cadastro')">Cadastro</button>
-      <button id="btnValidador" onclick="mostrarTela('validador')">Validador</button>
+      <button id="btnValidador" onclick="abrirValidador()">Validador</button>
     </div>
 
     <section id="cadastro" class="screen active">
       <h1>Cadastro do Evento</h1>
-      <p>Preencha seus dados. No final, será gerado um código de confirmação.</p>
+      <p>Preencha seus dados. No final, será gerado um código de confirmação com QR Code.</p>
 
       <div class="grid">
         <div class="field">
@@ -243,38 +202,97 @@
 
       <button id="btnFinalizar" class="primary" onclick="finalizarCadastro()">Finalizar cadastro</button>
 
-      <div id="resultadoCadastro" class="card" style="display:none;">
+      <div id="resultadoCadastro" class="card hidden">
         <h2>Cadastro concluído</h2>
         <p>Seu código de confirmação é:</p>
         <div id="codigoGerado" class="code-box"></div>
-        <p class="small">Mostre ou informe esse código no ponto de validação.</p>
+
+        <div class="qr-wrap">
+          <canvas id="qrCanvas"></canvas>
+          <p class="small">Apresente este QR Code ou informe o código para a equipe.</p>
+        </div>
       </div>
     </section>
 
     <section id="validador" class="screen">
       <h1>Validador</h1>
-      <p>Digite o código informado pelo participante.</p>
 
-      <div class="field">
-        <label for="codigoConsulta">Código</label>
-        <input type="text" id="codigoConsulta" placeholder="Ex: A7K93P" />
+      <div id="blocoSenha" class="card senha-box">
+        <h3>Acesso da Staff</h3>
+        <p>Digite a senha para liberar o painel de validação.</p>
+
+        <div class="field">
+          <label for="senhaValidador">Senha</label>
+          <input type="password" id="senhaValidador" placeholder="Digite a senha" />
+        </div>
+
+        <button class="dark" onclick="validarSenha()">Entrar no validador</button>
       </div>
 
-      <button id="btnValidar" class="secondary" onclick="validarCodigo()">Validar código</button>
+      <div id="blocoValidador" class="hidden">
+        <p>Valide por código, câmera ou telefone.</p>
 
-      <div id="resultadoValidacao" class="card" style="display:none;"></div>
+        <div class="field">
+          <label for="codigoConsulta">Código</label>
+          <input type="text" id="codigoConsulta" placeholder="Ex: A7K93P" />
+        </div>
+
+        <button id="btnValidar" class="secondary" onclick="validarCodigo()">Validar código</button>
+        <button id="btnAbrirCamera" class="dark" onclick="iniciarLeitor()">Ler pela câmera</button>
+        <button id="btnFecharCamera" class="warn hidden" onclick="pararLeitor()">Fechar câmera</button>
+
+        <div id="reader" class="hidden"></div>
+
+        <div class="divider"></div>
+
+        <div class="field">
+          <label for="telefoneBusca">Buscar por telefone</label>
+          <input type="text" id="telefoneBusca" placeholder="Digite o telefone do participante" />
+        </div>
+
+        <button id="btnBuscarTelefone" class="dark" onclick="buscarPorTelefone()">Buscar por telefone</button>
+
+        <div id="resultadoValidacao" class="card hidden"></div>
+      </div>
     </section>
   </div>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbz7G8rxGGt2JTBKgLSwyIz1geUNYmgyw98HVgFt7m9wmg13hY1uzNFBKU0UF31scC0/exec";
+    const SENHA_VALIDADOR = "MBL@MISSAO";
+
+    let leitorAtivo = null;
+    let validadorLiberado = false;
 
     function mostrarTela(tela) {
       document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
       document.querySelectorAll(".tabs button").forEach(el => el.classList.remove("active"));
-
       document.getElementById(tela).classList.add("active");
       document.getElementById(tela === "cadastro" ? "btnCadastro" : "btnValidador").classList.add("active");
+    }
+
+    function abrirValidador() {
+      mostrarTela("validador");
+
+      if (validadorLiberado) {
+        document.getElementById("blocoSenha").classList.add("hidden");
+        document.getElementById("blocoValidador").classList.remove("hidden");
+      } else {
+        document.getElementById("blocoSenha").classList.remove("hidden");
+        document.getElementById("blocoValidador").classList.add("hidden");
+      }
+    }
+
+    function validarSenha() {
+      const senha = document.getElementById("senhaValidador").value;
+
+      if (senha === SENHA_VALIDADOR) {
+        validadorLiberado = true;
+        document.getElementById("blocoSenha").classList.add("hidden");
+        document.getElementById("blocoValidador").classList.remove("hidden");
+      } else {
+        alert("Senha incorreta.");
+      }
     }
 
     function setLoading(buttonId, isLoading, originalText) {
@@ -327,6 +345,57 @@
       });
     }
 
+    function gerarQrCode(codigo) {
+      const canvas = document.getElementById("qrCanvas");
+
+      new QRious({
+        element: canvas,
+        value: codigo,
+        size: 240,
+        level: "H"
+      });
+    }
+
+    function normalizarTelefone(valor) {
+      return String(valor || "").replace(/\D/g, "");
+    }
+
+    function renderResultado(dados) {
+      const box = document.getElementById("resultadoValidacao");
+      box.classList.remove("hidden");
+
+      if (!dados.ok) {
+        box.innerHTML = `<div class="status error">${dados.mensagem || "Erro na consulta."}</div>`;
+        return;
+      }
+
+      if (!dados.encontrado) {
+        box.innerHTML = `<div class="status error">${dados.mensagem || "Registro não encontrado."}</div>`;
+        return;
+      }
+
+      if (dados.status === "usado") {
+        box.innerHTML = `
+          <div class="status warnbox">Registro encontrado, mas já foi utilizado.</div>
+          <div class="line"><strong>Nome:</strong> ${dados.nome || "-"}</div>
+          <div class="line"><strong>Telefone:</strong> ${dados.telefone || "-"}</div>
+          <div class="line"><strong>E-mail:</strong> ${dados.email || "-"}</div>
+          <div class="line"><strong>Código:</strong> ${dados.codigo || "-"}</div>
+        `;
+        return;
+      }
+
+      box.innerHTML = `
+        <div class="status ok">Registro válido. Cadastro confirmado.</div>
+        <div class="line"><strong>Nome:</strong> ${dados.nome || "-"}</div>
+        <div class="line"><strong>Telefone:</strong> ${dados.telefone || "-"}</div>
+        <div class="line"><strong>E-mail:</strong> ${dados.email || "-"}</div>
+        <div class="line"><strong>Código:</strong> ${dados.codigo || "-"}</div>
+        <div class="line"><strong>Status:</strong> ${dados.status || "-"}</div>
+        <button class="warn" onclick="marcarUsado('${dados.codigo}')">Marcar como usado</button>
+      `;
+    }
+
     async function finalizarCadastro() {
       const nome = document.getElementById("nome").value.trim();
       const telefone = document.getElementById("telefone").value.trim();
@@ -352,7 +421,8 @@
         }
 
         document.getElementById("codigoGerado").textContent = dados.codigo;
-        document.getElementById("resultadoCadastro").style.display = "block";
+        document.getElementById("resultadoCadastro").classList.remove("hidden");
+        gerarQrCode(dados.codigo);
 
         document.getElementById("nome").value = "";
         document.getElementById("telefone").value = "";
@@ -366,7 +436,6 @@
 
     async function validarCodigo() {
       const codigo = document.getElementById("codigoConsulta").value.trim().toUpperCase();
-      const box = document.getElementById("resultadoValidacao");
 
       if (!codigo) {
         alert("Digite um código.");
@@ -381,41 +450,39 @@
           codigo
         });
 
-        box.style.display = "block";
-
-        if (!dados.ok) {
-          box.innerHTML = `<div class="status error">${dados.mensagem || "Erro na validação."}</div>`;
-          return;
-        }
-
-        if (!dados.encontrado) {
-          box.innerHTML = `<div class="status error">Código inválido. Nenhum cadastro encontrado.</div>`;
-          return;
-        }
-
-        if (dados.status === "usado") {
-          box.innerHTML = `
-            <div class="status warnbox">Código encontrado, mas já foi utilizado.</div>
-            <div class="line"><strong>Nome:</strong> ${dados.nome || "-"}</div>
-            <div class="line"><strong>Telefone:</strong> ${dados.telefone || "-"}</div>
-            <div class="line"><strong>E-mail:</strong> ${dados.email || "-"}</div>
-          `;
-          return;
-        }
-
-        box.innerHTML = `
-          <div class="status ok">Código válido. Cadastro confirmado.</div>
-          <div class="line"><strong>Nome:</strong> ${dados.nome || "-"}</div>
-          <div class="line"><strong>Telefone:</strong> ${dados.telefone || "-"}</div>
-          <div class="line"><strong>E-mail:</strong> ${dados.email || "-"}</div>
-          <div class="line"><strong>Status:</strong> ${dados.status || "-"}</div>
-          <button class="warn" onclick="marcarUsado('${codigo}')">Marcar como usado</button>
-        `;
+        renderResultado(dados);
       } catch (erro) {
-        box.style.display = "block";
+        const box = document.getElementById("resultadoValidacao");
+        box.classList.remove("hidden");
         box.innerHTML = `<div class="status error">Erro ao validar: ${erro.message}</div>`;
       } finally {
         setLoading("btnValidar", false, "Validar código");
+      }
+    }
+
+    async function buscarPorTelefone() {
+      const telefone = normalizarTelefone(document.getElementById("telefoneBusca").value);
+
+      if (!telefone) {
+        alert("Digite um telefone.");
+        return;
+      }
+
+      setLoading("btnBuscarTelefone", true, "Buscar por telefone");
+
+      try {
+        const dados = await jsonpRequest({
+          acao: "buscartelefone",
+          telefone
+        });
+
+        renderResultado(dados);
+      } catch (erro) {
+        const box = document.getElementById("resultadoValidacao");
+        box.classList.remove("hidden");
+        box.innerHTML = `<div class="status error">Erro ao buscar telefone: ${erro.message}</div>`;
+      } finally {
+        setLoading("btnBuscarTelefone", false, "Buscar por telefone");
       }
     }
 
@@ -431,10 +498,68 @@
         }
 
         alert("Código marcado como usado.");
+        document.getElementById("codigoConsulta").value = codigo;
         validarCodigo();
       } catch (erro) {
         alert("Erro: " + erro.message);
       }
+    }
+
+    async function iniciarLeitor() {
+      const readerElement = document.getElementById("reader");
+      const btnAbrir = document.getElementById("btnAbrirCamera");
+      const btnFechar = document.getElementById("btnFecharCamera");
+
+      readerElement.classList.remove("hidden");
+      btnFechar.classList.remove("hidden");
+      btnAbrir.classList.add("hidden");
+
+      try {
+        if (!leitorAtivo) {
+          leitorAtivo = new Html5Qrcode("reader");
+        }
+
+        const cameras = await Html5Qrcode.getCameras();
+        if (!cameras || cameras.length === 0) {
+          throw new Error("Nenhuma câmera encontrada.");
+        }
+
+        const cameraId = cameras[0].id;
+
+        await leitorAtivo.start(
+          cameraId,
+          {
+            fps: 10,
+            qrbox: { width: 250, height: 250 }
+          },
+          async (decodedText) => {
+            document.getElementById("codigoConsulta").value = decodedText.trim().toUpperCase();
+            await pararLeitor();
+            await validarCodigo();
+          },
+          () => {}
+        );
+      } catch (erro) {
+        alert("Erro ao iniciar câmera: " + erro.message);
+        pararLeitor();
+      }
+    }
+
+    async function pararLeitor() {
+      const readerElement = document.getElementById("reader");
+      const btnAbrir = document.getElementById("btnAbrirCamera");
+      const btnFechar = document.getElementById("btnFecharCamera");
+
+      try {
+        if (leitorAtivo && leitorAtivo.isScanning) {
+          await leitorAtivo.stop();
+          await leitorAtivo.clear();
+        }
+      } catch (e) {}
+
+      readerElement.classList.add("hidden");
+      btnFechar.classList.add("hidden");
+      btnAbrir.classList.remove("hidden");
     }
   </script>
 </body>
