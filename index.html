@@ -3,55 +3,230 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cadastro e Validação - Evento</title>
+  <title>Missão | Credenciamento</title>
+
+  <meta name="theme-color" content="#000000" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
   <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      color: #111827;
+    :root {
+      --bg: #000000;
+      --bg-soft: rgba(255,255,255,0.06);
+      --bg-soft-2: rgba(255,255,255,0.10);
+      --line: rgba(251, 172, 30, 0.32);
+      --line-soft: rgba(255,255,255,0.12);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.72);
+      --accent: #fcbe26;
+      --accent-strong: #fbac1e;
+      --accent-text: #000000;
+      --ok: #0dbb3f;
+      --error: #ff6b6b;
+      --warn: #ffbf47;
+      --glass: rgba(20,20,20,0.72);
+      --shadow: 0 24px 80px rgba(0,0,0,0.42);
+      --radius-xl: 30px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --max: 1120px;
     }
 
-    .wrap {
-      max-width: 980px;
-      margin: 24px auto;
-      background: #ffffff;
-      border-radius: 18px;
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(37% 60% at 100% 100%, #111111 0%, #000000 100%);
+      color: var(--text);
+      font-family: "Afacad", sans-serif;
+    }
+
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      right: -120px;
+      top: 100px;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(252,190,38,0.16) 0%, rgba(252,190,38,0) 70%);
+      pointer-events: none;
+      filter: blur(14px);
+    }
+
+    .shell {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 24px 0 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(252,190,38,1) 0%, rgba(251,172,30,1) 100%);
+      color: #000;
+      display: grid;
+      place-items: center;
+      font-family: "Poppins", sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 12px 36px rgba(251,172,30,0.24);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-family: "Afacad", sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .brand-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .hero {
+      padding: 32px 0 18px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      font-size: clamp(40px, 7vw, 72px);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      font-weight: 700;
+    }
+
+    .hero-copy h1 .accent {
+      color: var(--accent);
+    }
+
+    .hero-copy p {
+      margin: 18px 0 0;
+      font-size: 22px;
+      line-height: 1.25;
+      color: var(--muted);
+      max-width: 580px;
+    }
+
+    .hero-side {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .hero-emblem {
+      width: min(100%, 340px);
+      aspect-ratio: 1;
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(252,190,38,0.32), rgba(252,190,38,0.04) 48%, rgba(255,255,255,0.02) 70%),
+        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border: 1px solid rgba(252,190,38,0.18);
+      box-shadow: var(--shadow);
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      font-family: "Poppins", sans-serif;
+      font-weight: 700;
+      font-size: 76px;
+      letter-spacing: -0.04em;
+    }
+
+    .panel {
+      margin: 20px 0 56px;
+      background: var(--glass);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
       overflow: hidden;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+      backdrop-filter: blur(14px);
     }
 
     .tabs {
       display: flex;
-      gap: 10px;
-      background: #111827;
-      padding: 16px;
+      gap: 12px;
+      padding: 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(0,0,0,0.28), rgba(0,0,0,0));
       flex-wrap: wrap;
     }
 
     .tabs button {
-      border: 0;
-      border-radius: 10px;
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      border-radius: 999px;
       padding: 12px 18px;
-      color: #ffffff;
-      background: #374151;
-      font-weight: bold;
+      font-family: "Afacad", sans-serif;
+      font-size: 19px;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .tabs button.active {
-      background: #2563eb;
+      transition: 0.25s ease;
     }
 
     .tabs button:hover {
-      opacity: 0.92;
+      transform: translateY(-1px);
+      border-color: rgba(252,190,38,0.30);
+    }
+
+    .tabs button.active {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: transparent;
+      box-shadow: 0 10px 28px rgba(252,190,38,0.22);
     }
 
     .screen {
@@ -63,145 +238,148 @@
       display: block;
     }
 
-    h1, h2, h3 {
-      margin-top: 0;
+    .section-title {
+      margin: 0 0 6px;
+      font-size: 40px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      font-weight: 700;
     }
 
-    p {
-      line-height: 1.5;
+    .section-title .accent {
+      color: var(--accent);
     }
 
-    .grid {
+    .section-desc {
+      margin: 0 0 26px;
+      font-size: 19px;
+      color: var(--muted);
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line-soft);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .fields {
       display: grid;
       gap: 16px;
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    @media (max-width: 768px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .wrap {
-        margin: 0;
-        border-radius: 0;
-        min-height: 100vh;
-      }
-
-      .screen {
-        padding: 20px;
-      }
-
-      .code-box {
-        font-size: 24px;
-        letter-spacing: 2px;
-      }
     }
 
     .field {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin-bottom: 14px;
     }
 
-    label {
-      font-size: 14px;
-      font-weight: bold;
+    .field label {
+      font-family: "Poppins", sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.82);
     }
 
     input {
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: 1px solid #d1d5db;
       width: 100%;
+      height: 50px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border-radius: 12px;
+      padding: 0 16px;
       outline: none;
+      font-family: "Poppins", sans-serif;
+      font-size: 15px;
+      transition: 0.25s ease;
+    }
+
+    input::placeholder {
+      color: rgba(255,255,255,0.56);
     }
 
     input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      border-color: var(--accent);
+      background: rgba(252,190,38,0.08);
+      box-shadow: 0 0 0 3px rgba(252,190,38,0.08);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
     }
 
     button.primary,
     button.secondary,
-    button.warn,
-    button.dark {
+    button.dark,
+    button.warn {
+      appearance: none;
       border: 0;
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 14px 20px;
-      font-size: 16px;
-      font-weight: bold;
+      font-family: "Poppins", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       cursor: pointer;
-      color: #ffffff;
-      margin-right: 10px;
-      margin-top: 8px;
-      transition: 0.2s;
+      transition: 0.25s ease;
     }
 
-    button.primary { background: #16a34a; }
-    button.secondary { background: #2563eb; }
-    button.warn { background: #d97706; }
-    button.dark { background: #111827; }
+    button.primary {
+      background: var(--accent);
+      color: #000;
+    }
+
+    button.secondary {
+      background: #ffffff;
+      color: #000;
+    }
+
+    button.dark {
+      background: rgba(255,255,255,0.10);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    button.warn {
+      background: #8a5a00;
+      color: #fff2d1;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
 
     button.primary:hover,
     button.secondary:hover,
-    button.warn:hover,
-    button.dark:hover {
-      opacity: 0.92;
-    }
-
-    .card {
-      margin-top: 18px;
-      padding: 18px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
-    }
-
-    .code-box {
-      margin-top: 12px;
-      padding: 18px;
-      border: 2px dashed #16a34a;
-      border-radius: 14px;
-      background: #ecfdf5;
-      text-align: center;
-      font-size: 30px;
-      font-weight: bold;
-      letter-spacing: 4px;
-      word-break: break-word;
-    }
-
-    .status {
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-
-    .ok {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .error {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .warnbox {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .small {
-      color: #6b7280;
-      font-size: 13px;
-    }
-
-    .line {
-      margin: 8px 0;
+    button.dark:hover,
+    button.warn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
     }
 
     .loading {
@@ -209,125 +387,361 @@
       pointer-events: none;
     }
 
+    .hidden {
+      display: none !important;
+    }
+
+    .result-block {
+      margin-top: 20px;
+    }
+
+    .code-box {
+      margin-top: 14px;
+      border-radius: 22px;
+      border: 1px solid rgba(252,190,38,0.28);
+      background: linear-gradient(180deg, rgba(252,190,38,0.12), rgba(252,190,38,0.05));
+      padding: 18px;
+      text-align: center;
+      font-family: "Poppins", sans-serif;
+      font-size: clamp(28px, 6vw, 42px);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+      word-break: break-word;
+    }
+
     .qr-wrap {
-      margin-top: 18px;
       display: flex;
-      justify-content: center;
-      align-items: center;
       flex-direction: column;
+      align-items: center;
       gap: 12px;
+      margin-top: 18px;
     }
 
     #qrCanvas {
-      background: #fff;
+      background: white;
+      border-radius: 18px;
       padding: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .small {
+      font-size: 14px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .status {
+      padding: 14px 16px;
       border-radius: 14px;
-      border: 1px solid #e5e7eb;
+      font-family: "Poppins", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .ok {
+      background: rgba(13,187,63,0.14);
+      border: 1px solid rgba(13,187,63,0.34);
+      color: #98f1b2;
+    }
+
+    .error {
+      background: rgba(255,107,107,0.12);
+      border: 1px solid rgba(255,107,107,0.28);
+      color: #ffc1c1;
+    }
+
+    .warnbox {
+      background: rgba(252,190,38,0.14);
+      border: 1px solid rgba(252,190,38,0.28);
+      color: #ffe49f;
+    }
+
+    .result-lines {
+      display: grid;
+      gap: 10px;
+    }
+
+    .line {
+      font-size: 17px;
+      color: white;
+    }
+
+    .line strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+      margin: 22px 0;
     }
 
     #reader {
       width: 100%;
       max-width: 420px;
-      margin-top: 12px;
+      margin-top: 14px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .hidden {
-      display: none !important;
+    .foot-note {
+      margin-top: 18px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.54);
     }
 
-    .senha-box {
-      max-width: 420px;
+    @media (max-width: 980px) {
+      .hero,
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-side {
+        justify-content: flex-start;
+      }
+
+      .hero-emblem {
+        width: 220px;
+        font-size: 52px;
+      }
     }
 
-    .divider {
-      margin: 18px 0;
-      border-top: 1px solid #e5e7eb;
+    @media (max-width: 640px) {
+      .shell {
+        width: min(var(--max), calc(100% - 20px));
+      }
+
+      .topbar {
+        padding-top: 16px;
+      }
+
+      .brand-badge {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        font-size: 15px;
+      }
+
+      .brand-title {
+        font-size: 24px;
+      }
+
+      .panel {
+        border-radius: 22px;
+      }
+
+      .tabs {
+        padding: 16px;
+      }
+
+      .screen {
+        padding: 20px;
+      }
+
+      .section-title {
+        font-size: 32px;
+      }
+
+      .section-desc {
+        font-size: 17px;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 18px;
+      }
+
+      input {
+        height: 48px;
+      }
+
+      .code-box {
+        letter-spacing: 0.10em;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="tabs">
-      <button id="btnCadastro" class="active" onclick="mostrarTela('cadastro')">Cadastro</button>
-      <button id="btnValidador" onclick="abrirValidador()">Validador</button>
+  <div class="page">
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-badge">MBL</div>
+          <div class="brand-text">
+            <div class="brand-title">Missão</div>
+            <div class="brand-subtitle">Credenciamento do evento</div>
+          </div>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <h1>
+            A <span class="accent">missão</span> de
+            credenciar sem fila
+          </h1>
+          <p>
+            Cadastro rápido, código de confirmação, QR Code e validação pela staff
+            com câmera, código ou telefone.
+          </p>
+        </div>
+        <div class="hero-side">
+          <div class="hero-emblem">M</div>
+        </div>
+      </section>
+
+      <main class="panel">
+        <div class="tabs">
+          <button id="btnCadastro" class="active" onclick="mostrarTela('cadastro')">Cadastro</button>
+          <button id="btnValidador" onclick="abrirValidador()">Validador</button>
+        </div>
+
+        <section id="cadastro" class="screen active">
+          <div class="content-grid">
+            <div>
+              <h2 class="section-title">
+                Seu <span class="accent">cadastro</span>
+              </h2>
+              <p class="section-desc">
+                Preencha seus dados. Ao concluir, o sistema gera um código e um QR Code
+                para apresentação no evento.
+              </p>
+
+              <div class="card">
+                <div class="fields">
+                  <div class="field">
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" placeholder="Digite seu nome" />
+                  </div>
+
+                  <div class="field">
+                    <label for="telefone">Telefone</label>
+                    <input type="text" id="telefone" placeholder="(00) 00000-0000" />
+                  </div>
+
+                  <div class="field">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="voce@email.com" />
+                  </div>
+                </div>
+
+                <div class="actions">
+                  <button id="btnFinalizar" class="primary" onclick="finalizarCadastro()">Finalizar cadastro</button>
+                </div>
+
+                <div class="foot-note">
+                  Apresente o QR Code na entrada ou informe o código para a equipe.
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div id="resultadoCadastro" class="card hidden">
+                <h3>Cadastro concluído</h3>
+                <p>Seu código de confirmação foi gerado com sucesso.</p>
+
+                <div id="codigoGerado" class="code-box"></div>
+
+                <div class="qr-wrap">
+                  <canvas id="qrCanvas"></canvas>
+                  <p class="small">Mostre este QR Code para a staff ou informe o código manualmente.</p>
+                </div>
+              </div>
+
+              <div class="card" style="margin-top: 18px;">
+                <h3>Como funciona</h3>
+                <p>
+                  Na entrada, a equipe pode validar seu acesso de três formas:
+                  leitura do QR Code, digitação do código ou busca pelo telefone.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="validador" class="screen">
+          <div class="content-grid">
+            <div>
+              <h2 class="section-title">
+                Painel da <span class="accent">staff</span>
+              </h2>
+              <p class="section-desc">
+                Acesse com senha e valide participantes por câmera, código ou telefone.
+              </p>
+
+              <div id="blocoSenha" class="card">
+                <h3>Acesso restrito</h3>
+                <p>Digite a senha para liberar o validador.</p>
+
+                <div class="fields" style="margin-top: 18px;">
+                  <div class="field">
+                    <label for="senhaValidador">Senha</label>
+                    <input type="password" id="senhaValidador" placeholder="Digite a senha da staff" />
+                  </div>
+                </div>
+
+                <div class="actions">
+                  <button class="primary" onclick="validarSenha()">Entrar no validador</button>
+                </div>
+              </div>
+
+              <div id="blocoValidador" class="hidden">
+                <div class="card">
+                  <h3>Validar por código</h3>
+
+                  <div class="fields" style="margin-top: 18px;">
+                    <div class="field">
+                      <label for="codigoConsulta">Código</label>
+                      <input type="text" id="codigoConsulta" placeholder="Ex: A7K93P" />
+                    </div>
+                  </div>
+
+                  <div class="actions">
+                    <button id="btnValidar" class="primary" onclick="validarCodigo()">Validar código</button>
+                    <button id="btnAbrirCamera" class="dark" onclick="iniciarLeitor()">Ler pela câmera</button>
+                    <button id="btnFecharCamera" class="warn hidden" onclick="pararLeitor()">Fechar câmera</button>
+                  </div>
+
+                  <div id="reader" class="hidden"></div>
+
+                  <div class="divider"></div>
+
+                  <h3>Buscar por telefone</h3>
+
+                  <div class="fields" style="margin-top: 18px;">
+                    <div class="field">
+                      <label for="telefoneBusca">Telefone</label>
+                      <input type="text" id="telefoneBusca" placeholder="Digite o telefone do participante" />
+                    </div>
+                  </div>
+
+                  <div class="actions">
+                    <button id="btnBuscarTelefone" class="dark" onclick="buscarPorTelefone()">Buscar por telefone</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div id="resultadoValidacao" class="card hidden"></div>
+
+              <div class="card" style="margin-top: 18px;">
+                <h3>Operação recomendada</h3>
+                <p>
+                  Use o QR Code como fluxo principal. Se o celular do participante morreu em serviço,
+                  faça a busca por telefone e siga o baile.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
-
-    <section id="cadastro" class="screen active">
-      <h1>Cadastro do Evento</h1>
-      <p>Preencha seus dados. No final, será gerado um código de confirmação com QR Code.</p>
-
-      <div class="grid">
-        <div class="field">
-          <label for="nome">Nome</label>
-          <input type="text" id="nome" placeholder="Digite seu nome" />
-        </div>
-
-        <div class="field">
-          <label for="telefone">Telefone</label>
-          <input type="text" id="telefone" placeholder="(00) 00000-0000" />
-        </div>
-
-        <div class="field" style="grid-column: 1 / -1;">
-          <label for="email">E-mail</label>
-          <input type="email" id="email" placeholder="voce@email.com" />
-        </div>
-      </div>
-
-      <button id="btnFinalizar" class="primary" onclick="finalizarCadastro()">Finalizar cadastro</button>
-
-      <div id="resultadoCadastro" class="card hidden">
-        <h2>Cadastro concluído</h2>
-        <p>Seu código de confirmação é:</p>
-        <div id="codigoGerado" class="code-box"></div>
-
-        <div class="qr-wrap">
-          <canvas id="qrCanvas"></canvas>
-          <p class="small">Apresente este QR Code ou informe o código para a equipe.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="validador" class="screen">
-      <h1>Validador</h1>
-
-      <div id="blocoSenha" class="card senha-box">
-        <h3>Acesso da Staff</h3>
-        <p>Digite a senha para liberar o painel de validação.</p>
-
-        <div class="field">
-          <label for="senhaValidador">Senha</label>
-          <input type="password" id="senhaValidador" placeholder="Digite a senha" />
-        </div>
-
-        <button class="dark" onclick="validarSenha()">Entrar no validador</button>
-      </div>
-
-      <div id="blocoValidador" class="hidden">
-        <p>Valide por código, câmera ou telefone.</p>
-
-        <div class="field">
-          <label for="codigoConsulta">Código</label>
-          <input type="text" id="codigoConsulta" placeholder="Ex: A7K93P" />
-        </div>
-
-        <button id="btnValidar" class="secondary" onclick="validarCodigo()">Validar código</button>
-        <button id="btnAbrirCamera" class="dark" onclick="iniciarLeitor()">Ler pela câmera</button>
-        <button id="btnFecharCamera" class="warn hidden" onclick="pararLeitor()">Fechar câmera</button>
-
-        <div id="reader" class="hidden"></div>
-
-        <div class="divider"></div>
-
-        <div class="field">
-          <label for="telefoneBusca">Buscar por telefone</label>
-          <input type="text" id="telefoneBusca" placeholder="Digite o telefone do participante" />
-        </div>
-
-        <button id="btnBuscarTelefone" class="dark" onclick="buscarPorTelefone()">Buscar por telefone</button>
-
-        <div id="resultadoValidacao" class="card hidden"></div>
-      </div>
-    </section>
   </div>
 
   <script>
@@ -451,22 +865,28 @@
       if (dados.status === "usado") {
         box.innerHTML = `
           <div class="status warnbox">Registro encontrado, mas já foi utilizado.</div>
-          <div class="line"><strong>Nome:</strong> ${dados.nome || "-"}</div>
-          <div class="line"><strong>Telefone:</strong> ${dados.telefone || "-"}</div>
-          <div class="line"><strong>E-mail:</strong> ${dados.email || "-"}</div>
-          <div class="line"><strong>Código:</strong> ${dados.codigo || "-"}</div>
+          <div class="result-lines">
+            <div class="line"><strong>Nome:</strong> ${dados.nome || "-"}</div>
+            <div class="line"><strong>Telefone:</strong> ${dados.telefone || "-"}</div>
+            <div class="line"><strong>E-mail:</strong> ${dados.email || "-"}</div>
+            <div class="line"><strong>Código:</strong> ${dados.codigo || "-"}</div>
+          </div>
         `;
         return;
       }
 
       box.innerHTML = `
         <div class="status ok">Registro válido. Cadastro confirmado.</div>
-        <div class="line"><strong>Nome:</strong> ${dados.nome || "-"}</div>
-        <div class="line"><strong>Telefone:</strong> ${dados.telefone || "-"}</div>
-        <div class="line"><strong>E-mail:</strong> ${dados.email || "-"}</div>
-        <div class="line"><strong>Código:</strong> ${dados.codigo || "-"}</div>
-        <div class="line"><strong>Status:</strong> ${dados.status || "-"}</div>
-        <button class="warn" onclick="marcarUsado('${dados.codigo}')">Marcar como usado</button>
+        <div class="result-lines">
+          <div class="line"><strong>Nome:</strong> ${dados.nome || "-"}</div>
+          <div class="line"><strong>Telefone:</strong> ${dados.telefone || "-"}</div>
+          <div class="line"><strong>E-mail:</strong> ${dados.email || "-"}</div>
+          <div class="line"><strong>Código:</strong> ${dados.codigo || "-"}</div>
+          <div class="line"><strong>Status:</strong> ${dados.status || "-"}</div>
+        </div>
+        <div class="actions">
+          <button class="warn" onclick="marcarUsado('${dados.codigo}')">Marcar como usado</button>
+        </div>
       `;
     }
 
