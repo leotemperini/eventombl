@@ -133,57 +133,6 @@
       color: var(--muted);
     }
 
-    .hero {
-      padding: 32px 0 18px;
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 28px;
-      align-items: center;
-    }
-
-    .hero-copy h1 {
-      margin: 0;
-      font-size: clamp(40px, 7vw, 72px);
-      line-height: 0.95;
-      letter-spacing: -0.04em;
-      font-weight: 700;
-    }
-
-    .hero-copy h1 .accent {
-      color: var(--accent);
-    }
-
-    .hero-copy p {
-      margin: 18px 0 0;
-      font-size: 22px;
-      line-height: 1.25;
-      color: var(--muted);
-      max-width: 580px;
-    }
-
-    .hero-side {
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .hero-emblem {
-      width: min(100%, 340px);
-      aspect-ratio: 1;
-      border-radius: 30px;
-      background:
-        radial-gradient(circle at 50% 40%, rgba(252,190,38,0.32), rgba(252,190,38,0.04) 48%, rgba(255,255,255,0.02) 70%),
-        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-      border: 1px solid rgba(252,190,38,0.18);
-      box-shadow: var(--shadow);
-      display: grid;
-      place-items: center;
-      color: var(--accent);
-      font-family: "Poppins", sans-serif;
-      font-weight: 700;
-      font-size: 76px;
-      letter-spacing: -0.04em;
-    }
-
     .panel {
       margin: 20px 0 56px;
       background: var(--glass);
@@ -305,7 +254,9 @@
       color: rgba(255,255,255,0.82);
     }
 
-    input {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
       width: 100%;
       height: 50px;
       border: 1px solid rgba(255,255,255,0.10);
@@ -389,10 +340,6 @@
 
     .hidden {
       display: none !important;
-    }
-
-    .result-block {
-      margin-top: 20px;
     }
 
     .code-box {
@@ -495,19 +442,37 @@
       color: rgba(255,255,255,0.54);
     }
 
+    .checkbox-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 2px;
+      padding: 4px 2px;
+      color: rgba(255,255,255,0.84);
+      font-family: "Poppins", sans-serif;
+      font-size: 14px;
+    }
+
+    .checkbox-line input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .checkbox-line label {
+      cursor: pointer;
+      text-transform: none;
+      letter-spacing: normal;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.84);
+      font-family: "Poppins", sans-serif;
+    }
+
     @media (max-width: 980px) {
-      .hero,
       .content-grid {
         grid-template-columns: 1fr;
-      }
-
-      .hero-side {
-        justify-content: flex-start;
-      }
-
-      .hero-emblem {
-        width: 220px;
-        font-size: 52px;
       }
     }
 
@@ -556,7 +521,9 @@
         border-radius: 18px;
       }
 
-      input {
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
         height: 48px;
       }
 
@@ -612,6 +579,16 @@
                     <label for="email">E-mail</label>
                     <input type="email" id="email" placeholder="voce@email.com" />
                   </div>
+
+                  <div class="field">
+                    <label for="convidadoPor">Convidado por quem?</label>
+                    <input type="text" id="convidadoPor" placeholder="Ex: Marlon dos Santos" />
+                  </div>
+
+                  <div class="checkbox-line">
+                    <input type="checkbox" id="naoConvidado" />
+                    <label for="naoConvidado">Não fui convidado por ninguém</label>
+                  </div>
                 </div>
 
                 <div class="actions">
@@ -619,7 +596,7 @@
                 </div>
 
                 <div class="foot-note">
-                  Apresente o QR Code na entrada ou informe o código para a equipe.
+                  Nome, telefone e e-mail são obrigatórios. Se ninguém te convidou, marque a opção acima.
                 </div>
               </div>
             </div>
@@ -729,7 +706,7 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxULB5qYIaWZfyJpyTE946IPRD1JD1jvcKaqISPvEijp5yj5tEek_rvk55bxOvpsIk/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbxJEeo-TpizDFGuP1X5uq5SnbNouc2sdYRFTf6bybq2C05psLgvMWoD7ZMkqDN4ehs/exec";
     const SENHA_VALIDADOR = "MBL@MISSAO";
 
     let leitorAtivo = null;
@@ -832,6 +809,30 @@
       return String(valor || "").replace(/\D/g, "");
     }
 
+    function mascararTelefone(valor) {
+      const nums = String(valor || "").replace(/\D/g, "").slice(0, 11);
+
+      if (nums.length <= 2) return nums;
+      if (nums.length <= 7) return `(${nums.slice(0,2)}) ${nums.slice(2)}`;
+      return `(${nums.slice(0,2)}) ${nums.slice(2,7)}-${nums.slice(7)}`;
+    }
+
+    function atualizarEstadoConvidadoPor() {
+      const checkbox = document.getElementById("naoConvidado");
+      const campo = document.getElementById("convidadoPor");
+
+      if (checkbox.checked) {
+        campo.value = "";
+        campo.disabled = true;
+        campo.placeholder = "Será enviado como Ninguem";
+        campo.style.opacity = "0.65";
+      } else {
+        campo.disabled = false;
+        campo.placeholder = "Ex: Marlon dos Santos";
+        campo.style.opacity = "1";
+      }
+    }
+
     function renderResultado(dados) {
       const box = document.getElementById("resultadoValidacao");
       box.classList.remove("hidden");
@@ -853,6 +854,7 @@
             <div class="line"><strong>Nome:</strong> ${dados.nome || "-"}</div>
             <div class="line"><strong>Telefone:</strong> ${dados.telefone || "-"}</div>
             <div class="line"><strong>E-mail:</strong> ${dados.email || "-"}</div>
+            <div class="line"><strong>Convidado por:</strong> ${dados.convidadoPor || "-"}</div>
             <div class="line"><strong>Código:</strong> ${dados.codigo || "-"}</div>
           </div>
         `;
@@ -865,6 +867,7 @@
           <div class="line"><strong>Nome:</strong> ${dados.nome || "-"}</div>
           <div class="line"><strong>Telefone:</strong> ${dados.telefone || "-"}</div>
           <div class="line"><strong>E-mail:</strong> ${dados.email || "-"}</div>
+          <div class="line"><strong>Convidado por:</strong> ${dados.convidadoPor || "-"}</div>
           <div class="line"><strong>Código:</strong> ${dados.codigo || "-"}</div>
           <div class="line"><strong>Status:</strong> ${dados.status || "-"}</div>
         </div>
@@ -876,11 +879,18 @@
 
     async function finalizarCadastro() {
       const nome = document.getElementById("nome").value.trim();
-      const telefone = document.getElementById("telefone").value.trim();
+      const telefone = normalizarTelefone(document.getElementById("telefone").value);
       const email = document.getElementById("email").value.trim();
+      const convidadoPor = document.getElementById("convidadoPor").value.trim();
+      const naoConvidado = document.getElementById("naoConvidado").checked;
 
       if (!nome || !telefone || !email) {
         alert("Preencha nome, telefone e e-mail.");
+        return;
+      }
+
+      if (!naoConvidado && !convidadoPor) {
+        alert('Preencha "Convidado por quem?" ou marque "Não fui convidado por ninguém".');
         return;
       }
 
@@ -891,7 +901,9 @@
           acao: "cadastrar",
           nome,
           telefone,
-          email
+          email,
+          convidadoPor,
+          naoConvidado: naoConvidado ? "true" : "false"
         });
 
         if (!dados.ok) {
@@ -905,6 +917,9 @@
         document.getElementById("nome").value = "";
         document.getElementById("telefone").value = "";
         document.getElementById("email").value = "";
+        document.getElementById("convidadoPor").value = "";
+        document.getElementById("naoConvidado").checked = false;
+        atualizarEstadoConvidadoPor();
       } catch (erro) {
         alert("Erro ao finalizar cadastro: " + erro.message);
       } finally {
@@ -1046,6 +1061,18 @@
       btnFechar.classList.add("hidden");
       btnAbrir.classList.remove("hidden");
     }
+
+    document.getElementById("telefone").addEventListener("input", function(e) {
+      e.target.value = mascararTelefone(e.target.value);
+    });
+
+    document.getElementById("telefoneBusca").addEventListener("input", function(e) {
+      e.target.value = mascararTelefone(e.target.value);
+    });
+
+    document.getElementById("naoConvidado").addEventListener("change", atualizarEstadoConvidadoPor);
+
+    atualizarEstadoConvidadoPor();
   </script>
 </body>
 </html>
